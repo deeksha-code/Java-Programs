@@ -1,0 +1,106 @@
+QUESTION
+Write a program for error detecting code using CRC-CCITT (16- bits).
+
+//Java program for error detecting code using CRC-CCITT
+import java.util.*;
+import java.io.*;
+public class CRC
+{
+    public static void main(String [] args) throws Exception
+	  {
+		Scanner sc=new Scanner(System.in);
+		System.out.println("Enter the data in binary form");
+		String data=sc.nextLine();
+		System.out.println("Enter the generator in binary form");
+		String gen=sc.nextLine();
+		String code=data;
+		while(code.length()<(data.length()+(gen.length()-1)))
+		{
+			code+="0";
+		}
+		System.out.println("message is"+code);
+                code=data+div(code,gen);
+		System.out.println("Transmitted message is"+code);
+		String rem=div(code,gen);
+		if(Integer.parseInt(rem)==0)
+		{
+			System.out.println("no error in the transmitted data");
+		}
+		else
+		{
+			System.out.println("error in the transmitted data");
+		}
+		System.out.println("Enter the position of the bit to be altered");
+		int a=sc.nextInt();
+		if(code.charAt(a)=='0')
+		{
+			 code=code.substring(0,a)+"1"+code.substring(a+1);
+		}
+		else
+		{
+			 code=code.substring(0,a)+"0"+code.substring(a+1);
+		}
+		
+		rem=div(code,gen);
+		if(Integer.parseInt(rem)==0)
+		{
+			System.out.println("no error in the transmitted data");
+		}
+		else
+		{
+			System.out.println("error in the transmitted data");
+		}
+	}
+  static String div(String str1,String str2)
+	{
+		int pointer=str2.length();
+		String result=str1.substring(0,pointer);
+		String remainder="";
+		for(int i=0;i<str2.length();i++)
+		{
+			if(result.charAt(i)==str2.charAt(i))
+			{
+				remainder+="0";
+			}
+			else
+			{
+				remainder+="1";
+			}
+		}
+		result=remainder;
+		while(pointer<str1.length())
+		{
+			if(remainder.charAt(0)=='0')
+			{
+				remainder=remainder.substring(1,remainder.length());
+				remainder=remainder+String.valueOf(str1.charAt(pointer));
+				pointer++;
+			}
+			result=remainder;
+			remainder="";
+			if(result.charAt(0)!='0')
+			{
+				for(int i=0;i<str2.length();i++)
+				{
+					if(result.charAt(i)==str2.charAt(i))
+					{
+						remainder+="0";
+					}
+					else
+					{
+						remainder+="1";
+					}
+				}
+				result=remainder;
+                                
+			}
+			else
+			{
+					remainder=result;
+			}
+		}
+		return remainder.substring(1,remainder.length());
+	}
+	
+}
+	
