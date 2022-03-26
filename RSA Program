@@ -1,0 +1,67 @@
+QUESTION
+Write a program for simple RSA algorithm to encrypt and decrypt the data. 
+
+//Java program for simple RSA algorithm to encrypt and decrypt the data. 
+import java.util.*;
+import java.io.*;
+import java.math.BigInteger;
+public class RSA
+{
+	 private BigInteger p,q,n,phi,e,d;
+	 private Random r;
+	 private int bitlength=1024;
+	 public RSA()
+         {
+		  r=new Random();
+		  p= BigInteger.probablePrime(bitlength,r);
+		  q = BigInteger.probablePrime(bitlength,r);
+		  n=p.multiply(q);
+		  phi=p.subtract(BigInteger.ONE).multiply(q.subtract(BigInteger.ONE));
+		  e=BigInteger.probablePrime(bitlength/2,r);
+		  while((phi.gcd(e).compareTo(BigInteger.ONE)>0) && (e.compareTo(phi)<0))
+		  {
+			e.add(BigInteger.ONE);
+		  }
+		  d=e.modInverse(phi);
+	}
+   public RSA(BigInteger e,BigInteger d,BigInteger n)
+   {
+			this.e=e;
+			this.d=d;
+			this.n=n;
+	}
+	public static void main(String args[]) throws Exception
+	{
+		   System.out.println("Enter the data");
+		   DataInputStream in=new DataInputStream(System.in);
+		   String textstring=in.readLine();
+		   System.out.println("data is"+textstring);
+		   System.out.println("plain text in bytes"+ bytestostring(textstring.getBytes()));
+		   RSA rs=new RSA();
+		   byte [] encrypted=rs.encrypt(textstring.getBytes());
+		   byte [] decrypted=rs.decrypt(encrypted);
+		   System.out.println("Decrypted bytes"+ bytestostring(decrypted));
+		   System.out.println("Decrypted String"+ new String(decrypted));
+	}
+  public static String bytestostring(byte [] encrypted)
+	{
+		String text="";
+		for(byte b:encrypted)
+		{
+			text=text+ Byte.toString(b);
+		}
+		return text;
+       }
+       public byte [] encrypt(byte [] message)
+       {
+			 return (new BigInteger(message)).modPow(e,n).toByteArray();
+       }
+       public byte [] decrypt(byte [] message)
+       {
+			 return (new BigInteger(message)).modPow(d,n).toByteArray();
+       }
+}
+
+		   
+	
+		  
