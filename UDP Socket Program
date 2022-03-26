@@ -1,0 +1,64 @@
+QUESTION
+Write a program on datagram socket for client/server to display the messages on client side, 
+typed at the server side. 
+
+//Java program to create datagram socket for client
+import java.net.*;
+import java.io.*;
+public class UDPclient
+{
+	public static void main(String args[]) throws SocketException,UnknownHostException,IOException
+	{
+		byte senddata[]=new byte[1024];
+		byte receivedata[]=new byte[1024];
+		DatagramSocket mysocket=new DatagramSocket();
+		System.out.println("enter the data to send");
+		BufferedReader informusr=new BufferedReader(new InputStreamReader(System.in));
+		String data=informusr.readLine();
+		senddata=data.getBytes();
+		InetAddress myIp=InetAddress.getByName("localhost");
+		DatagramPacket sendpacket=new DatagramPacket(senddata,senddata.length,myIp,8000);
+		mysocket.send(sendpacket);
+		DatagramPacket recievepacket=new DatagramPacket(receivedata,receivedata.length);
+		mysocket.receive(recievepacket);
+		String datatodisplay=new String(recievepacket.getData());
+		System.out.println("received data is"+" "+datatodisplay);
+		mysocket.close();
+		
+	}
+}
+	
+
+//Java program to implement server side
+import java.io.*;
+import java.util.*;
+import java.net.*;
+class UDPserver
+{
+	public static void main(String args[]) throws Exception
+	{
+		Scanner sc=new Scanner(System.in);
+		byte senddata[]=new byte[1024];
+		byte receivedata[]=new byte[1024];
+		DatagramSocket datagramsocket=new DatagramSocket(8000);
+                while(true)
+		{
+		DatagramPacket receivepacket=new DatagramPacket(receivedata,receivedata.length);
+		datagramsocket.receive(receivepacket);
+		InetAddress clientIP=receivepacket.getAddress();
+		int port=receivepacket.getPort();
+		String data=new String(receivepacket.getData());
+		System.out.println("client data is"+" "+data);
+		System.out.println("Enter data to send");
+		String str=sc.nextLine();
+		senddata=str.getBytes();
+		DatagramPacket sendpacket=new DatagramPacket(senddata,senddata.length,clientIP,port);
+		datagramsocket.send(sendpacket);
+		}
+	}
+}
+
+
+
+
+
