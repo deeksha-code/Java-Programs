@@ -1,0 +1,89 @@
+QUESTION
+Write a program to find the shortest path between vertices using bellman-ford algorithm. 
+
+//Java  program to find the shortest path between vertices using bellman-ford algorithm. 
+import java.util.*;
+public class bellman
+{
+ 		private int no_of_vertices;
+		private int dist[];
+		public static final int max=999;
+		public static void main(String [] args) throws Exception
+		{
+		  	Scanner sc=new Scanner(System.in);
+		  	System.out.println("Enter the number of vertices");
+			  int no_of_vertices=sc.nextInt();
+			  System.out.println("Enter the adjacency matrix");
+			  int adjacencymatrix[][]=new int[ no_of_vertices+1][ no_of_vertices+1];
+			  for(int sn=1;sn<= no_of_vertices;sn++)
+			  {
+				  for(int dn=1;dn<= no_of_vertices;dn++)
+				  {
+					  adjacencymatrix[sn][dn]=sc.nextInt();
+					  if(sn==dn)
+				  	{
+					    	adjacencymatrix[sn][dn]=0;
+						    continue;
+					  }
+					  if(adjacencymatrix[sn][dn]==0)
+					  {
+					    	adjacencymatrix[sn][dn]=max;
+					  }
+				 }
+			}
+			System.out.println("Enter the source vertex");	
+			int source=sc.nextInt();
+			bellman b=new bellman(no_of_vertices);
+			b.shortestpath(source,adjacencymatrix);
+	 }
+	 public bellman(int no_of_vertices)
+	 {
+			  this.no_of_vertices=no_of_vertices;
+			  dist=new int[no_of_vertices+1];
+	 }
+	 public void shortestpath(int source,int adjacencymatrix[][])
+	 {
+		        for(int vertex=1;vertex<=no_of_vertices;vertex++)
+			      {
+				         dist[vertex]=max;
+			      }
+			      dist[source]=0;
+			      for(int vertex=1;vertex<=no_of_vertices;vertex++)
+			      {
+				            for(int sn=1;sn<= no_of_vertices;sn++)
+				            {
+				                  for(int dn=1;dn<= no_of_vertices;dn++)
+					                {
+						                     if(adjacencymatrix[sn][dn]!=max)
+						                     {
+							                            	if(dist[dn]>dist[sn]+adjacencymatrix[sn][dn])
+								                            {
+									                                            dist[dn]=dist[sn]+adjacencymatrix[sn][dn];
+							                             	}
+					                      	}
+
+				              	}
+				          }
+			   }
+			  for(int sn=1;sn<= no_of_vertices;sn++)
+		    {
+				
+					  for(int dn=1;dn<= no_of_vertices;dn++)
+				  	{
+						     if(adjacencymatrix[sn][dn]!=max)
+						     {
+							    	if(dist[dn]>dist[sn]+adjacencymatrix[sn][dn])
+							    	{
+								      	System.out.println("Graph encountered negative edge cycle");
+								        System.exit();
+								    }
+						    }
+
+					}
+		    }
+		    for(int vertex=1;vertex<=no_of_vertices;vertex++)
+		    {
+		       			System.out.println("distance from vertex"+source+" "+"to vertex"+vertex+" "+dist[vertex]);
+			  }
+ }
+}
