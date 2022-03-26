@@ -1,0 +1,66 @@
+QUESTION
+Using TCP/IP sockets, write a client – server program to make the client send the file name 
+and to make the server send back the contents of the requested file if present.
+
+//Java program to implent client side
+import java.io.*;
+import java.net.*;
+import java.util.*;
+class TCPclient
+{
+	public static void main(String [] args) throws Exception
+	{
+		 Socket s=new Socket("localhost",8000);
+		 System.out.println("Enter the filename");
+		 BufferedReader b=new BufferedReader(new InputStreamReader(System.in));
+		 String str=b.readLine();
+		 System.out.println("filename is"+" "+str);
+		 OutputStream ostream=s.getOutputStream();
+		 PrintWriter pw=new  PrintWriter (ostream,true);
+		 System.out.println("send filename to server");
+		 pw.println(str);
+		 InputStream istream=s.getInputStream();
+		 BufferedReader b1=new BufferedReader(new InputStreamReader(istream));
+		 String str1;
+		 while((str1=b1.readLine())!=null)
+		 {
+			System.out.println(str1);
+		 }
+ 		pw.close();
+		s.close();
+		b.close();
+	}
+}
+
+
+
+//Java program to implent server side
+import java.io.*;
+import java.net.*;
+import java.util.*;
+class TCPserver
+{
+	public static void main(String [] args) throws Exception
+	{
+		 
+		ServerSocket sc=new ServerSocket(8000);
+		System.out.println("server is ready for connection");
+		Socket s=sc.accept();
+		System.out.println("connection established");
+		InputStream istream=s.getInputStream();
+		BufferedReader b=new BufferedReader(new InputStreamReader(istream));	
+		String str=b.readLine();
+		BufferedReader b1=new BufferedReader(new FileReader(str));
+		OutputStream ostream=s.getOutputStream();
+		PrintWriter pw=new  PrintWriter (ostream,true);
+		String str1;
+		while((str1=b1.readLine())!=null)
+		{
+			pw.println(str1);
+		}
+		s.close();
+		sc.close();
+		pw.close();
+		b.close();
+        }
+}
